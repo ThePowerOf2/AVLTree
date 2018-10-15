@@ -5,6 +5,7 @@
 
 using namespace std;
 
+// Declaring the Tree Node structure.
 template <class ItemType>
 struct TreeNode {
 	ItemType contents;
@@ -19,43 +20,51 @@ class Tree
 public:
 	Tree();
 	~Tree();
+	// Public functions for manipulating/printing the tree.
 	void insertItem(ItemType item);
 	void printTree();
 	void searchForItem(ItemType item);
 	void deleteItem(ItemType item);
 
 private:
+	// Private functions used to insert items into the tree.
 	void Insert(TreeNode<ItemType> *&root, ItemType item, bool &taller);
 	void leftBalance(TreeNode<ItemType> *&root,bool &taller);
 	void rightBalance(TreeNode<ItemType> *&root, bool &taller);
-	void rotateLeft(TreeNode<ItemType> *&root);
-	void rotateRight(TreeNode<ItemType> *&root);
 
+	// Private functions to delete item in the tree.
 	void Delete(TreeNode<ItemType> *&root, ItemType item , bool &shorter);
 	void deleteNode(TreeNode<ItemType> *&root, bool &shorter);
 	void deleteRightBalance(TreeNode<ItemType> *&root, bool &shorter);
 	void deleteLeftBalance(TreeNode<ItemType> *&root, bool &shorter);
 	void getPredecessor(TreeNode<ItemType> *root, ItemType &data);
 
+	// Private functions used to rotate nodes to balance the tree.
+	void rotateLeft(TreeNode<ItemType> *&root);
+	void rotateRight(TreeNode<ItemType> *&root);
+
+	// Recursive functions to print and search for item in the tree.
 	void Print(TreeNode<ItemType> *&root);
 	void Search(TreeNode<ItemType> *&root, ItemType item);
 
+	// Declaring the root of the tree.
 	TreeNode<ItemType> *root;
 };
 
 template <class ItemType>
-Tree<ItemType>::Tree() {
-}
+Tree<ItemType>::Tree() {}
 
 template <class ItemType>
 Tree<ItemType>::~Tree() {}
 
+// Public function to call the recursive Insert function.
 template <class ItemType>
 void Tree<ItemType>::insertItem(ItemType item) {
 	bool taller;
 	Insert(root, item, taller);
 }
 
+// Private recursive fuction to insert an item into the tree and rebalance it.
 template <class ItemType>
 void Tree<ItemType>::Insert(TreeNode<ItemType> *&root, ItemType item, bool &taller) {
 	// If the tree is null then create a new treenode here with the input.
@@ -109,22 +118,28 @@ void Tree<ItemType>::Insert(TreeNode<ItemType> *&root, ItemType item, bool &tall
 	}
 }
 
+// Private function to re-balance the tree if it is right high.
 template <class ItemType>
 void Tree<ItemType>::rightBalance(TreeNode<ItemType> *&root, bool &taller) {
 	TreeNode<ItemType> *rs = root->right;
 	TreeNode<ItemType> *ls;
 
+	// Balance the tree based on the right subtrees balance factor.
 	switch (rs->BalanceFactor) {
+		// If the right subtree is equal height the tree is already balanced. Therefore it should never get here.
 	case 'E':
 		cerr << "The tree is already balanced." << endl;
 		break;
+		// If the right subtree is also right high then rotate the nodes using rotate left.
 	case 'R':
 		root->BalanceFactor = rs->BalanceFactor = 'E';
 		rotateLeft(root);
 		taller = false;
 		break;
+		// If the right subtree is left high you will need to do a double rotate.
 	case 'L':
 		ls = rs->left;
+		// Changes to the balance factors based on the left subtree of the right subtrees balance factor.
 		switch (ls->BalanceFactor) {
 		case 'E':
 			root->BalanceFactor = rs->BalanceFactor = 'E';
@@ -146,11 +161,13 @@ void Tree<ItemType>::rightBalance(TreeNode<ItemType> *&root, bool &taller) {
 	}
 }
 
+// Private function to re-balance the tree if it is left high.
 template <class ItemType>
-void Tree<ItemType>::leftBalance(TreeNode<ItemType> *&tree, bool &taller) {
+void Tree<ItemType>::leftBalance(TreeNode<ItemType> *&root, bool &taller) {
 	TreeNode<ItemType> *ls = root->left;
 	TreeNode<ItemType> *rs;
 
+	// Balance the tree based on the left subtrees balance factor.
 	switch (ls->BalanceFactor) {
 	case 'E':
 		cerr << "The tree is already balanced." << endl;
@@ -183,6 +200,7 @@ void Tree<ItemType>::leftBalance(TreeNode<ItemType> *&tree, bool &taller) {
 	}
 }
 
+// Private function to rotate a tree/subtree left to balance the tree/subtree.
 template <class ItemType>
 void Tree<ItemType>::rotateLeft(TreeNode<ItemType> *&root){
 	TreeNode<ItemType> *rs;
@@ -201,6 +219,7 @@ void Tree<ItemType>::rotateLeft(TreeNode<ItemType> *&root){
 	}
 }
 
+// Private function to rotate a tree/subtree right to balance the tree/subtree.
 template <class ItemType>
 void Tree<ItemType>::rotateRight(TreeNode<ItemType> *&root) {
 	TreeNode <ItemType> *ls;
@@ -219,18 +238,21 @@ void Tree<ItemType>::rotateRight(TreeNode<ItemType> *&root) {
 	}
 }
 
+// Public function to call the reccursive function to print the trees contents.
 template <class ItemType>
 void Tree<ItemType>::printTree() {
 	Print(root);
 }
 
+// Private reccursive function to print out the contents of the tree in order.
 template <class ItemType>
 void Tree<ItemType>::Print(TreeNode<ItemType> *&root) {
+	// If the root of the tree is null it's empty.
 	if (root == NULL) {
 		cerr << "The tree is empty";
 		return;
 	}
-
+	 // If there is a subtree to the left then use this function again with the left subtree as the root.
 	if (root->left != NULL) {
 		Print(root->left);
 	}
@@ -251,6 +273,7 @@ void Tree<ItemType>::Print(TreeNode<ItemType> *&root) {
 	}
 	cout << "Balance Factor : " << setw(15) << root->BalanceFactor << endl;
 
+	// If there is a subtree to the right then use this function again with the right subtree as the root.
 	if (root->right != NULL) {
 		Print(root->right);
 	}
