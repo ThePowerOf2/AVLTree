@@ -279,11 +279,13 @@ void Tree<ItemType>::Print(TreeNode<ItemType> *&root) {
 	}
 }
 
+// Public function to call the reccursive Search function.
 template <class ItemType>
 void Tree<ItemType>::searchForItem(ItemType item) {
 	Search(root, item);
 }
 
+// Searches down the AVL tree until it hits a null node or the item and returns the result.
 template <class ItemType>
 void Tree<ItemType>::Search(TreeNode<ItemType> *&root, ItemType item) {
 	if (root == NULL) {
@@ -300,17 +302,22 @@ void Tree<ItemType>::Search(TreeNode<ItemType> *&root, ItemType item) {
 	}
 }
 
+// Public function to call the reccursive Delete function.
 template <class ItemType>
 void Tree<ItemType>::deleteItem(ItemType item) {
 	bool shorter;
 	Delete(root, item, shorter);
 }
 
+// Private reccursive function to find and delete an item in the tree and rebalance it.
 template <class ItemType>
 void Tree<ItemType>::Delete(TreeNode<ItemType> *&root, ItemType item, bool &shorter) {
+	// If the tree is not empty.
 	if (root != NULL) {
+		// If the item is less than the contents of the current tree root go left.
 		if (item < root->contents) {
 			Delete(root->left, item, shorter);
+			// If the item was deleted then rebalance the tree.
 			if (shorter) {
 				switch (root->BalanceFactor) {
 				case 'E':
@@ -326,8 +333,10 @@ void Tree<ItemType>::Delete(TreeNode<ItemType> *&root, ItemType item, bool &shor
 				}
 			}
 		}
+		// If the item is greater than the contents of the current tree root then go right.
 		else if (item > root->contents) {
-			Delete(root, item, shorter);
+			Delete(root->right, item, shorter);
+			// If the item was deleted then rebalance the tree.
 			if (shorter) {
 				switch (root->BalanceFactor) {
 				case 'E':
@@ -343,10 +352,12 @@ void Tree<ItemType>::Delete(TreeNode<ItemType> *&root, ItemType item, bool &shor
 				}
 			}
 		}
+		// If it is not less than or greater than it must be the item so delte the node.
 		else {
 			deleteNode(root, shorter);
 		}
 	}
+	// It has hits a null tree then the item has not been found.
 	else {
 		cout << "\nNOTE: " << item << "is not in the tree and cannot be deleted.";
 	}
@@ -354,19 +365,24 @@ void Tree<ItemType>::Delete(TreeNode<ItemType> *&root, ItemType item, bool &shor
 
 template <class ItemType>
 void Tree<ItemType>::deleteNode(TreeNode<ItemType> *&root, bool &shorter) {
+	// Temporary variables.
 	ItemType data;
 	TreeNode<ItemType> *tempPtr;
 	tempPtr = root;
+
+	// If the left of the node to be deleted is null then overwrite the root with the right node.
 	if (root->left == NULL) {
 		root = root->right;
 		delete tempPtr;
 		shorter = true;
 	}
+	// If the right of the node to be deleted is null then overwrite the root with the left node.
 	else if (root->right == NULL) {
 		root = root->left;
 		delete tempPtr;
 		shorter = true;
 	}
+
 	else {
 		getPredecessor(root, data);
 		root->contents = data;
@@ -450,7 +466,7 @@ void Tree<ItemType>::deleteLeftBalance(TreeNode<ItemType> *&root, bool &shorter)
 		rs = ls->right;
 		switch (rs->BalanceFactor) {
 		case 'E':
-			root->BalanceFactor = ls->BalanceFactor = 'e';
+			root->BalanceFactor = ls->BalanceFactor = 'E';
 			break;
 		case 'R':
 			root->BalanceFactor = 'E';
