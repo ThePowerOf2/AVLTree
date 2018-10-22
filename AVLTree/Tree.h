@@ -60,7 +60,7 @@ Tree<ItemType>::~Tree() {}
 // Public function to call the recursive Insert function.
 template <class ItemType>
 void Tree<ItemType>::insertItem(ItemType item) {
-	bool taller;
+	bool taller = false;
 	Insert(root, item, taller);
 }
 
@@ -305,7 +305,7 @@ void Tree<ItemType>::Search(TreeNode<ItemType> *&root, ItemType item) {
 // Public function to call the reccursive Delete function.
 template <class ItemType>
 void Tree<ItemType>::deleteItem(ItemType item) {
-	bool shorter;
+	bool shorter = false;
 	Delete(root, item, shorter);
 }
 
@@ -359,7 +359,7 @@ void Tree<ItemType>::Delete(TreeNode<ItemType> *&root, ItemType item, bool &shor
 	}
 	// It has hits a null tree then the item has not been found.
 	else {
-		cout << "\nNOTE: " << item << "is not in the tree and cannot be deleted.";
+		cout << "\nNOTE: " << item << " is not in the tree and cannot be deleted.";
 	}
 }
 
@@ -369,7 +369,6 @@ void Tree<ItemType>::deleteNode(TreeNode<ItemType> *&root, bool &shorter) {
 	ItemType data;
 	TreeNode<ItemType> *tempPtr;
 	tempPtr = root;
-
 	// If the left of the node to be deleted is null then overwrite the root with the right node.
 	if (root->left == NULL) {
 		root = root->right;
@@ -382,7 +381,7 @@ void Tree<ItemType>::deleteNode(TreeNode<ItemType> *&root, bool &shorter) {
 		delete tempPtr;
 		shorter = true;
 	}
-
+	// If there is a two subtrees under the node to be deleted.
 	else {
 		getPredecessor(root, data);
 		root->contents = data;
@@ -404,6 +403,7 @@ void Tree<ItemType>::deleteNode(TreeNode<ItemType> *&root, bool &shorter) {
 	}
 }
 
+// Private function to get the predecessor of a node.
 template <class ItemType>
 void Tree<ItemType>::getPredecessor(TreeNode<ItemType> *root, ItemType &data) {
 	root = root->left;
@@ -413,6 +413,7 @@ void Tree<ItemType>::getPredecessor(TreeNode<ItemType> *root, ItemType &data) {
 	data = root->contents;
 }
 
+// Private function to rebalance the tree if it is right high after deleting a node.
 template <class ItemType>
 void Tree<ItemType>::deleteRightBalance(TreeNode<ItemType> *&root, bool &shorter) {
 	TreeNode<ItemType> *rs = root->right;
@@ -451,6 +452,7 @@ void Tree<ItemType>::deleteRightBalance(TreeNode<ItemType> *&root, bool &shorter
 	}
 }
 
+// Private function to rebalance the tree if it is left high after deleting a node.
 template <class ItemType>
 void Tree<ItemType>::deleteLeftBalance(TreeNode<ItemType> *&root, bool &shorter) {
 	TreeNode<ItemType> *ls = root->left;
